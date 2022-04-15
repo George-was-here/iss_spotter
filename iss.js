@@ -27,7 +27,21 @@ const fetchMyIP = (callback) => {
 
 // Our next function, fetchCoordsByIP will be one that takes in an IP address and returns the latitude and longitude for it.
 const fetchCoordsByIp = (ip, callback) => {
-  
+  const url = `https://api.freegeoip.app/json/${ip}?apikey=61d208a0-bd07-11ec-a0de-25d15f52cfbb`;
+  request(url, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+    const data = JSON.parse(body);
+    console.log("LAT, LONG:", data.latitude, data.longitude);
+    callback(error, {latitude: data.latitude, longitude: data.longitude});
+  });
 };
 
 module.exports = { fetchMyIP, fetchCoordsByIp };
