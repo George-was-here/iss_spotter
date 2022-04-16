@@ -34,14 +34,33 @@ const fetchCoordsByIp = (ip, callback) => {
       return;
     }
     if (response.statusCode !== 200) {
-      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      const msg = `Status Code ${response.statusCode} when fetching Coordinates visa IP. Response: ${body}`;
       callback(Error(msg), null);
       return;
     }
-    const data = JSON.parse(body);
-    console.log("LAT, LONG:", data.latitude, data.longitude);
-    callback(error, {latitude: data.latitude, longitude: data.longitude});
+    const coords = JSON.parse(body);
+    console.log("LAT, LONG:", coords.latitude, coords.longitude); 
+    callback(null, {latitude: coords.latitude, longitude: coords.longitude});
   });
 };
 
-module.exports = { fetchMyIP, fetchCoordsByIp };
+const fetchISSFlyOverTimes = (coords, callback) => {
+  const url = `https://iss-pass.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`;
+  console.log(url);
+  request(url, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching ISSFlyOverTimes. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+    const passes = JSON.parse(body).response;
+    console.log("PASSES", passes);
+    callback(null, passes);
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIp, fetchISSFlyOverTimes };
