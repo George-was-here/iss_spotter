@@ -5,7 +5,7 @@ const { nextISSTimesForMyLocation } = require('./iss');
 
 // fetchCoordsByIp;
 
-const displayUpcomingPasses = function(passes) {
+const displayUpcomingPasses = (passes) => {
   for (const pass of passes) {
     const datetime = new Date(0);
     datetime.setUTCSeconds(pass.risetime);
@@ -42,3 +42,5 @@ nextISSTimesForMyLocation((error, passes) => {
 
 //   console.log('It worked! Returned flyover times:' , passTimes);
 // });
+
+module.exports = { displayUpcomingPasses };
